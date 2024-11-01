@@ -21,7 +21,14 @@ const usersController = {
 			const users = await servicesDB.getAll();
 			if (users) {
 				res.json({
+					//Cuenta la cantidad de usauarios
 					count: users.length,
+					//Cuenta la cantidad de usauarios que son administradores
+					admins: users.filter((user) => user.isAdmin).length,
+					//Cuenta la cantidad de cuentas que estan activas
+					active: users.filter((user) => user.isActive).length,
+					//Cuenta la cantidad de cuentas que estan verificadas
+					verified: users.filter((user) => user.verified).length,
 					users: [
 						...users.map((user) => {
 							return {

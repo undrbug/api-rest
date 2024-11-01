@@ -1,12 +1,39 @@
 const router = require("express").Router();
 let db = require("../database/models");
 const servicesDB = require('../services/services_db');
+require("dotenv").config();
+
+const url = process.env.URL;
 
 const productsController = {
 	getAll: async (req, res) => {
 		try {
 			const products = await db.Product.findAll();
-			res.json(products);
+			if (products) {
+			res.json({
+				count: products.length,
+				countByCategory: servicesDB.countByCategory(products),
+				stockByCategory: servicesDB.stockByCategory(products),
+				products: [
+					...products.map((product) => {
+						return {
+							id: product.ID_Product,
+							name: product.name,
+							drink_description: product.drink_description,
+							drink_type: product.drink_type,
+							Presentation: product.Presentation,
+							price: product.price,
+							brand: product.brand,
+							detail: `${url}/api/products/${product.ID_Product}`,
+						};
+					}),
+				],
+			});
+			} else {
+				res.json({
+					message: "No se encontraron productos",
+				});
+			}
 		}catch (error) {
 			console.log("Error al buscar el usuario", error.message);
 		}
@@ -18,35 +45,6 @@ const productsController = {
 		}catch (error) {
 			console.log("Error al buscar el usuario", error.message);
 		}
-	},
-	getOneByEmail: (req, res) => {
-		const { email } = req.params;
-		servicesDB.getByEmail(email)
-			.then((wine) => {
-				console.log(wine); // Puedes verificar los datos en la consola
-				res.render("products/productDetail.ejs", {
-					title: "Product Detail",
-					wine: wine,
-				});
-			})
-			.catch((error) => {
-				console.error("Error al obtener productos:", error.message);
-				res.status(500).send("Error al obtener la lista de productos.");
-			});
-	},
-
-	//obtner los valores en formato json de la tabla DrinkType (sin vista)
-  	//para completar el select de la vista de alta de productos
-	drinkList: (req, res) => {
-		db.Drinktype.findAll()
-			.then((drinkList) => {
-				res.send(drinkList);
-			})
-			.catch((error) => {
-				// Manejo de errores
-				console.error("Error al obtener productos:", error);
-				res.status(500).send("Error al obtener la lista de productos.");
-			});
 	},
 	//busca productos desde el input de busqueda del navbar
 	searchProducts: (req, res) => {
@@ -75,6 +73,26 @@ const productsController = {
 				res.status(500).send("Error al obtener la lista de productos.");
 			});
 	},
+	drinkList: async (req, res) => {
+		try {
+			const drinkType = await db.Drinktype.findAll()
+			if (drinkType) {
+				res.json({
+					count: drinkType.length,
+					drinkType: [
+						...drinkType.map((drink) => {
+							return {
+								id: drink.ID_Drinktype,
+								name: drink.Name,
+							};
+						}),
+					],
+				});
+			}
+		} catch (error) {
+			console.log("Error al buscar el usuario", error.message);
+		}
+	}
 };
 
 module.exports = productsController;

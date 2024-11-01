@@ -1,18 +1,16 @@
 const router = require('express').Router();
 const productsController = require('../controllers/products.controller.js');
 
+//Lista los tipos de bebidas
+router.get('/drinklist', productsController.drinkList);
 
 //muestra todos los prodctos de manera dinamica
-router.get('/getall', productsController.getAll);
+router.get('/', productsController.getAll);
+//traer un producto por id
+router.get('/:id', productsController.getOneById);
 
 //muestra productos filtrados en el input_search
 router.get('/search/:search', productsController.searchProducts);
 
-//detalle de producto
-router.get('/getonebyid/:id', productsController.getOneById);
-router.get('/getonebyemail/:id', productsController.getOneByEmail);
-
-
-router.get('/drinklist', productsController.drinkList);
 
 module.exports = router;
