@@ -3,9 +3,9 @@ const router = express.Router();
 const usersController = require('../controllers/users.controller');
 
 router.get('/count', usersController.count)
-router.get('/getall', usersController.getAll);
-router.get('/getone/:email', usersController.getOneByEmail);
-router.get('/getone/:id', usersController.getOneById);
+router.get('/users', usersController.getAll);
+router.get('/getonebyemail/:email', usersController.getOneByEmail);
+router.get('/users/:id', usersController.getbyid);
 
 
 module.exports = router;

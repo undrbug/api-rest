@@ -1,58 +1,10 @@
 const db = require("../database/models/index.js");
 const servicesDB = require("../services/services_db.js");
+require("dotenv").config();
 
 const url = process.env.URL;
 
 const usersController = {
-	//Tiene que devolver un objeto literal con la cantidad de usuarios
-	getAll: async (req, res) => {
-		try {
-			const users = await servicesDB.getAll();
-			res.json({
-				count: users.length,
-				users: users.map((user) => {
-					return {
-						id: user.id,
-						name: user.name + " " + user.lastname,
-						email: user.email,
-						avatar: `${url}/images/avatars/${user.image}`,
-						detail: `${url}/api/users/${user.id}`,
-					};
-				}),
-			});
-		} catch (error) {
-			console.log("Error al buscar los usuarios", error.message);
-		}
-	},
-	getOneByEmail: async (req, res) => {
-		try {
-			const user = await servicesDB.getByEmail(req.params.email);
-			res.json(user);
-		} catch (error) {
-			console.log("Error al buscar el usuario", error.message);
-		}
-	},
-    getOneById: async (req, res) => {
-        try {
-            const user = await db.Customer.findByPk(req.params.id);
-            res.json({
-				user: {
-					id: user.id,
-					name: user.name + " " + user.lastname,
-					email: user.email,
-					phone: user.phone,
-					adress: user.adress,
-					country: user.country,
-					state: user.state,
-					//revisar la imagen
-					avatar: `${url}/images/avatars/${user.image}`,
-					detail: `${url}/api/users/${user.id}`
-				}
-			});
-        } catch (error) {
-            console.log("Error al buscar el usuario", error.message);
-        }
-    },
 	count: async (req, res) => {
 		try {
 			const users = await servicesDB.getAll();
@@ -61,7 +13,80 @@ const usersController = {
 			});
 		} catch (error) {
 			console.log("Error al buscar los usuarios", error.message);
-		}			
+		}
+	},
+	//Tiene que devolver un objeto literal con la cantidad de usuarios
+	getAll: async (req, res) => {
+		try {
+			const users = await servicesDB.getAll();
+			if (users) {
+				res.json({
+					count: users.length,
+					users: [
+						...users.map((user) => {
+							return {
+								id: user.ID_Customer,
+								name: user.first_name + " " + user.last_name,
+								email: user.email,
+								detail: `${url}/api/users/${user.ID_Customer}`,
+							};
+						}),
+					],
+				});
+			} else {
+				res.json({
+					count: 0,
+					users: [],
+				});
+			}
+		} catch (error) {
+			console.log("Error al buscar los usuarios", error.message);
+		}
+	},
+	getOneByEmail: async (req, res) => {
+		try {
+			const user = await servicesDB.getByEmail(req.params.email);
+			if (user) {
+				res.json(user);
+			} else {
+				res.json({
+					message: "No se encontró el usuario",
+				});
+			}
+		} catch (error) {
+			console.log("Error al buscar el usuario", error.message);
+		}
+	},
+	getbyid: async (req, res) => {
+		try {
+			const user = await db.Customer.findByPk(req.params.id);
+			if (user) {
+				//quitar la contraseña
+				delete user.dataValues.HashPassword;
+				delete user.dataValues.isAdmin;
+				res.json({
+					id: user.ID_Customer,
+					name: user.first_name + " " + user.last_name,
+					email: user.email,
+					detail: `${url}/api/users/${user.ID_Customer}`,
+					//como mostrar la imagen que esta en la carpeta public?
+					image: `${url}${user.image}`,
+					phone: user.phone,
+					adress: user.adress,
+					state: user.state,
+					country: user.country,
+					Date_Record: user.Date_Record,
+					isActive: user.isActive,
+					verified: user.verified
+				});
+			} else {
+				res.json({
+					message: "No se encontró el usuario",
+				});
+			}
+		} catch (error) {
+			console.log("Error al buscar el usuario", error.message);
+		}
 	},
 };
 

@@ -1,0 +1,98 @@
+@import url('variables-estilos.css');
+
+* {
+    box-sizing: border-box;
+}
+
+.form-section {
+    margin-top: 2rem;
+
+}
+
+main.registro {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    margin: 0px;
+    background-color: #ebebeb;
+}
+
+form h4 {
+    margin: 20px 0 10px 0;
+    font-size: 14px;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="file"] {
+    border-radius: 5px;
+    width: 100%;
+}
+
+form label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+form input[type="submit"] {
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #ccc;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+}
+
+form input[type="reset"] {
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #929292;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+}
+
+form input[type="reset"]:hover {
+    background-color: #f44336;
+}
+
+form input[type="submit"]:hover {
+    background-color: #0B57D0;
+    cursor: pointer;
+}
+
+form input[type="submit"]:hover,
+form input[type="reset"]:hover {
+    opacity: 0.9;
+}
+
+.error {
+    display: none;
+    color: red;
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+input[type="email"]:invalid + .erroremail {
+    display: inline;
+}
+
+.profile {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.interests {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile input[type="radio"] + label,
+.interests input[type="checkbox"] + label {
+    margin-right: 20px;
+}

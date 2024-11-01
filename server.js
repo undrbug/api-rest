@@ -9,6 +9,9 @@ const app = express();
 // Puerto de la aplicación
 const PORT = process.env.PORT || 3306;
 
+// Middleware para archivos estáticos
+app.use(express.static("./public"));
+
 // Middleware para analizar el cuerpo de la solicitud
 //Sin esto, en el req.body no se puede acceder a los datos enviados por el formulario
 app.use(cors());
@@ -16,7 +19,7 @@ app.use(cors());
 app.use(express.json());
 
 // Rutas
-app.use('/users', usersRoute);
+app.use('/api', usersRoute);
 app.use('/products', productsRoute);
 
 // app.use((req, res, next) => {

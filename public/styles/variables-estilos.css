@@ -1,0 +1,20 @@
+/*variables-estilos.css*/
+:root {
+    --font-color-primary: #D9D3C1;
+    --font-color-secondary: #666;
+    --background-color-main: #f4f4f4;
+    --background-color-secondary: #f9f9f9;
+    --background-color-article: #D9D3C1;
+    --background-color-banner: url('banner.jpg') no-repeat center center;
+    --background-color-header: white;
+    --background-color-input: #d3d3d3;
+    --background-color-button: #d3d3d3;
+    --background-color-nav: #75572f;
+    --background-color-section-title: #F2AE30;
+    --hover-color: rgb(70, 70, 240);
+    --box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    --header-padding: 10px 16px 6px 16px;
+    --input-padding: 12px;
+    --article-padding: 20px;
+    --button-padding: 9px;
+}
