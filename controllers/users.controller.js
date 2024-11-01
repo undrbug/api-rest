@@ -69,8 +69,7 @@ const usersController = {
 					name: user.first_name + " " + user.last_name,
 					email: user.email,
 					detail: `${url}/api/users/${user.ID_Customer}`,
-					//como mostrar la imagen que esta en la carpeta public?
-					image: `${url}${user.image}`,
+					image: `${user.image}`,
 					phone: user.phone,
 					adress: user.adress,
 					state: user.state,
