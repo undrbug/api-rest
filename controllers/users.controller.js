@@ -18,17 +18,44 @@ const usersController = {
 	//Tiene que devolver un objeto literal con la cantidad de usuarios
 	getAll: async (req, res) => {
 		try {
-			const users = await servicesDB.getAll();
+			// const users = await servicesDB.getAll();
+			// const users = await db.Customer.findAll();
+			const limit = parseInt(req.query.limit) || 10;
+			const offset = parseInt(req.query.offset) || 0;
+
+			// Consulta paginada y conteo total
+			const { count, rows: users } = await db.Customer.findAndCountAll({
+				limit,
+				offset,
+				order: [["ID_Customer", "ASC"]],
+			});
+
+			const totalPages = Math.ceil(count / limit);
+			const currentPage = Math.floor(offset / limit) + 1;
+
+			// Contar usuarios con filtros aplicados
+			const countAdmins = users.filter((user) => user.isAdmin).length;
+			const countActive = users.filter((user) => user.isActive).length;
+			const countVerified = users.filter((user) => user.verified).length;
+
 			if (users) {
 				res.json({
 					//Cuenta la cantidad de usauarios
-					count: users.length,
+					count: count,
+					//Cuenta la cantidad de paginas
+					totalPages,
+					//Cuenta la pagina actual
+					currentPage,
+					//si es que hay una pagina siguiente
+					hasNextPage: offset + limit < count,
+					//si es que hay una pagina anterior
+					hasPreviousPage: offset > 0,
 					//Cuenta la cantidad de usauarios que son administradores
-					admins: users.filter((user) => user.isAdmin).length,
+					admins: countAdmins,
 					//Cuenta la cantidad de cuentas que estan activas
-					active: users.filter((user) => user.isActive).length,
+					active: countActive,
 					//Cuenta la cantidad de cuentas que estan verificadas
-					verified: users.filter((user) => user.verified).length,
+					verified: countVerified,
 					users: [
 						...users.map((user) => {
 							return {
@@ -83,7 +110,7 @@ const usersController = {
 					country: user.country,
 					Date_Record: user.Date_Record,
 					isActive: user.isActive,
-					verified: user.verified
+					verified: user.verified,
 				});
 			} else {
 				res.json({
