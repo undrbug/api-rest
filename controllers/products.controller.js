@@ -1,6 +1,6 @@
 const router = require("express").Router();
 let db = require("../database/models");
-const servicesDB = require('../services/services_db');
+const servicesDB = require("../services/services_db");
 require("dotenv").config();
 
 const url = process.env.URL;
@@ -8,33 +8,43 @@ const url = process.env.URL;
 const productsController = {
 	getAll: async (req, res) => {
 		try {
-			const products = await db.Product.findAll();
-			if (products) {
-			res.json({
-				count: products.length,
-				countByCategory: servicesDB.countByCategory(products),
-				stockByCategory: servicesDB.stockByCategory(products),
-				products: [
-					...products.map((product) => {
-						return {
-							id: product.ID_Product,
-							name: product.name,
-							drink_description: product.drink_description,
-							drink_type: product.drink_type,
-							Presentation: product.Presentation,
-							price: product.price,
-							brand: product.brand,
-							detail: `${url}/api/products/${product.ID_Product}`,
-						};
-					}),
-				],
+			const limit = parseInt(req.query.limit) || 10; // Número de productos por página, por defecto 10
+			const offset = parseInt(req.query.offset) || 0; // Índice inicial, por defecto 0
+
+			const products = await db.Product.findAll({
+				limit,
+				offset,
 			});
+			if (products) {
+				const totalProducts = await db.Product.count();
+				res.json({
+					count: products.length,
+					totalProducts,
+					countByCategory: servicesDB.countByCategory(products),
+					stockByCategory: servicesDB.stockByCategory(products),
+					currentPage: Math.ceil(offset / limit) + 1, 
+					totalPages: Math.ceil(totalProducts / limit), 
+					products: [
+						...products.map((product) => {
+							return {
+								id: product.ID_Product,
+								name: product.name,
+								drink_description: product.drink_description,
+								drink_type: product.drink_type,
+								Presentation: product.Presentation,
+								price: product.price,
+								brand: product.brand,
+								detail: `${url}/api/products/${product.ID_Product}`,
+							};
+						}),
+					],
+				});
 			} else {
 				res.json({
 					message: "No se encontraron productos",
 				});
 			}
-		}catch (error) {
+		} catch (error) {
 			console.log("Error al buscar el usuario", error.message);
 		}
 	},
@@ -42,7 +52,7 @@ const productsController = {
 		try {
 			const product = await db.Product.findByPk(req.params.id);
 			res.json(product);
-		}catch (error) {
+		} catch (error) {
 			console.log("Error al buscar el usuario", error.message);
 		}
 	},
@@ -51,15 +61,19 @@ const productsController = {
 		const { search } = req.params;
 		db.Product.findAll({
 			where: {
-        //buscar por todos los campos de la tabla productos
-        [db.Sequelize.Op.or]: [
-          { name: { [db.Sequelize.Op.like]: `%${search}%` } },
-          { drink_description: { [db.Sequelize.Op.like]: `%${search}%` } },
-          { drink_type: { [db.Sequelize.Op.like]: `%${search}%` } },
-          { Presentation: { [db.Sequelize.Op.like]: `%${search}%` } },
-          { price: { [db.Sequelize.Op.like]: `%${search}%` } },
-          { brand: { [db.Sequelize.Op.like]: `%${search}%` } },
-        ],
+				//buscar por todos los campos de la tabla productos
+				[db.Sequelize.Op.or]: [
+					{ name: { [db.Sequelize.Op.like]: `%${search}%` } },
+					{
+						drink_description: {
+							[db.Sequelize.Op.like]: `%${search}%`,
+						},
+					},
+					{ drink_type: { [db.Sequelize.Op.like]: `%${search}%` } },
+					{ Presentation: { [db.Sequelize.Op.like]: `%${search}%` } },
+					{ price: { [db.Sequelize.Op.like]: `%${search}%` } },
+					{ brand: { [db.Sequelize.Op.like]: `%${search}%` } },
+				],
 			},
 		})
 			.then((wineList) => {
@@ -75,7 +89,7 @@ const productsController = {
 	},
 	drinkList: async (req, res) => {
 		try {
-			const drinkType = await db.Drinktype.findAll()
+			const drinkType = await db.Drinktype.findAll();
 			if (drinkType) {
 				res.json({
 					count: drinkType.length,
@@ -92,7 +106,7 @@ const productsController = {
 		} catch (error) {
 			console.log("Error al buscar el usuario", error.message);
 		}
-	}
+	},
 };
 
 module.exports = productsController;
