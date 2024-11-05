@@ -20,6 +20,7 @@ const productsController = {
 				res.json({
 					count: products.length,
 					totalProducts,
+					lastProductAdded: products[products.length - 1].ID_Product,
 					countByCategory: servicesDB.countByCategory(products),
 					stockByCategory: servicesDB.stockByCategory(products),
 					currentPage: Math.ceil(offset / limit) + 1, 

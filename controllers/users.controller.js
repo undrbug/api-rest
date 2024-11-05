@@ -37,6 +37,7 @@ const usersController = {
 			const countAdmins = users.filter((user) => user.isAdmin).length;
 			const countActive = users.filter((user) => user.isActive).length;
 			const countVerified = users.filter((user) => user.verified).length;
+			const lastAdded = users[users.length - 1].ID_Customer;
 
 			if (users) {
 				res.json({
@@ -56,6 +57,8 @@ const usersController = {
 					active: countActive,
 					//Cuenta la cantidad de cuentas que estan verificadas
 					verified: countVerified,
+					//Devuelve el id del ultimo usuario
+					lastAdded,
 					users: [
 						...users.map((user) => {
 							return {
