@@ -37,7 +37,17 @@ const usersController = {
 			const countAdmins = users.filter((user) => user.isAdmin).length;
 			const countActive = users.filter((user) => user.isActive).length;
 			const countVerified = users.filter((user) => user.verified).length;
-			const lastAdded = users[users.length - 1].ID_Customer;
+			//buscamos el ultimo id de usuario agregado
+			const lastAddedID = await db.Customer.max("ID_Customer");
+			//traemos los datos del usuario
+			const lastuserdAdded = await db.Customer.findByPk(lastAddedID);
+			//obtenemos le fecha
+			const fecha = `${lastuserdAdded.Date_Record.getDate()}/${lastuserdAdded.Date_Record.getMonth()}/${lastuserdAdded.Date_Record.getFullYear()}`;
+			//creamos un objeto con el email y la fecha
+			const lastAdded = {
+				email: lastuserdAdded.email,
+				fecha,
+			};
 
 			if (users) {
 				res.json({
