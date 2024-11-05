@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const { where } = require("sequelize");
 let db = require("../database/models");
 const servicesDB = require("../services/services_db");
 require("dotenv").config();
@@ -15,16 +16,24 @@ const productsController = {
 				limit,
 				offset,
 			});
+
+			const lastProduct = await db.Product.findOne({
+				where: { ID_Product: products[products.length - 1].ID_Product },
+			});
+
 			if (products) {
 				const totalProducts = await db.Product.count();
 				res.json({
 					count: products.length,
 					totalProducts,
-					lastProductAdded: products[products.length - 1].ID_Product,
+					lastProductAdded: {
+						name: lastProduct.name,
+						description: lastProduct.drink_description.trim(),
+					},
 					countByCategory: servicesDB.countByCategory(products),
 					stockByCategory: servicesDB.stockByCategory(products),
-					currentPage: Math.ceil(offset / limit) + 1, 
-					totalPages: Math.ceil(totalProducts / limit), 
+					currentPage: Math.ceil(offset / limit) + 1,
+					totalPages: Math.ceil(totalProducts / limit),
 					products: [
 						...products.map((product) => {
 							return {
