@@ -15,7 +15,6 @@ const usersController = {
 			console.log("Error al buscar los usuarios", error.message);
 		}
 	},
-	//Tiene que devolver un objeto literal con la cantidad de usuarios
 	getAll: async (req, res) => {
 		try {
 			// const users = await servicesDB.getAll();
@@ -32,11 +31,26 @@ const usersController = {
 
 			const totalPages = Math.ceil(count / limit);
 			const currentPage = Math.floor(offset / limit) + 1;
+			
+			// Contar usuarios administradores, activos y verificados
+			const countAdmins = await db.Customer.count({
+				where: {
+					isAdmin: true,
+				},
+			});
 
-			// Contar usuarios con filtros aplicados
-			const countAdmins = users.filter((user) => user.isAdmin).length;
-			const countActive = users.filter((user) => user.isActive).length;
-			const countVerified = users.filter((user) => user.verified).length;
+			const countActive = await db.Customer.count({
+				where: {
+					isActive: true,
+				},
+			});
+			
+			const countVerified = await db.Customer.count({
+				where: {
+					verified: true,
+				},
+			});
+
 			//buscamos el ultimo id de usuario agregado
 			const lastAddedID = await db.Customer.max("ID_Customer");
 			//traemos los datos del usuario
