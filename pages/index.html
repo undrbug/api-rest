@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API REST Documentation</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Documentación de la API REST</h1>
+      <h2>Rutas de Usuarios</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Método</th>
+            <th>Ruta</th>
+            <th>Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GET</td>
+            <td>/api/users/count</td>
+            <td>Obtiene el conteo total de usuarios.</td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/users</td>
+            <td>Obtiene una lista de todos los usuarios.</td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/users/:id</td>
+            <td>Obtiene un usuario específico por su ID.</td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/users/getbyemail/:email</td>
+            <td>Obtiene un usuario específico por su email.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Rutas de Productos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Método</th>
+            <th>Ruta</th>
+            <th>Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GET</td>
+            <td>/api/products/drinklist</td>
+            <td>Lista los tipos de bebidas disponibles.</td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/products</td>
+            <td>Obtiene una lista de todos los productos.</td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/products/:id</td>
+            <td>Obtiene un producto específico por su ID.</td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/api/products/search/:search</td>
+            <td>Busca productos filtrados según el término de búsqueda.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
